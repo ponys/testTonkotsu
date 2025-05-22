@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 
 function RandomFact({ facts }) {
   const [randomFact, setRandomFact] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
   // Automatically select a random fact when the modal opens
   useEffect(() => {
     if (facts.length === 0) return;
+    setIsLoading(true);
     
     const randomIndex = Math.floor(Math.random() * facts.length);
     setRandomFact(facts[randomIndex]);
+    setIsLoading(false);
   }, [facts]);
   
   // Function to get a different random fact
@@ -32,10 +35,16 @@ function RandomFact({ facts }) {
 
   return (
     <div className="random-fact-container">
-      <p className="random-fact-text">{randomFact}</p>
-      <button onClick={getNewRandomFact} className="next-fact-btn">
-        Show Another Fact
-      </button>
+      {isLoading ? (
+        <p>Loading fact...</p>
+      ) : (
+        <>
+          <p className="random-fact-text">{randomFact}</p>
+          <button onClick={getNewRandomFact} className="next-fact-btn">
+            Show Another Fact
+          </button>
+        </>
+      )}
     </div>
   );
 }

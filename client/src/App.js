@@ -9,14 +9,15 @@ function App() {
   const [facts, setFacts] = useState([]);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isFactModalOpen, setIsFactModalOpen] = useState(false);
+  const [language, setLanguage] = useState('en');
   
   useEffect(() => {
     fetchFacts();
-  }, []);
+  }, [language]);
 
   const fetchFacts = async () => {
     try {
-      const response = await fetch('/api/dogfacts');
+      const response = await fetch(`/api/dogfacts?language=${language}`);
       const data = await response.json();
       setFacts(data.facts);
     } catch (error) {
@@ -31,7 +32,7 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ fact: newFact }),
+        body: JSON.stringify({ fact: newFact, language }),
       });
       
       if (response.ok) {
@@ -50,6 +51,23 @@ function App() {
       </header>
       
       <div className="controls">
+        <div className="language-controls">
+          <label htmlFor="language-select">Language: </label>
+          <select 
+            id="language-select"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+          >
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="it">Italian</option>
+            <option value="ja">Japanese</option>
+            <option value="ru">Russian</option>
+            <option value="zh">Chinese</option>
+          </select>
+        </div>
         <button onClick={() => setIsFactModalOpen(true)}>
           Show Random Fact
         </button>
