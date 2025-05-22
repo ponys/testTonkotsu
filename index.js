@@ -27,15 +27,17 @@ db.defaults({ facts: [
 ]}).write();
 
 app.get('/api/dogfact', (req, res) => {
+  const { language } = req.query;
   const facts = db.get('facts').value();
   const randomFact = facts[Math.floor(Math.random() * facts.length)];
-  res.json({ fact: randomFact });
+  res.json({ fact: randomFact, language });
 });
 
 // Add new endpoint to get all facts
 app.get('/api/dogfacts', (req, res) => {
+  const { language } = req.query;
   const facts = db.get('facts').value();
-  res.json({ facts });
+  res.json({ facts, language });
 });
 
 // Add new endpoint to add a dog fact
