@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import FactList from './components/FactList';
 import RandomFact from './components/RandomFact';
 import FactForm from './components/FactForm';
+import Modal from './components/Modal';
 import './App.css';
 
 function App() {
   const [facts, setFacts] = useState([]);
-  const [showForm, setShowForm] = useState(false);
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [isFactModalOpen, setIsFactModalOpen] = useState(false);
   
   useEffect(() => {
     fetchFacts();
@@ -34,7 +36,7 @@ function App() {
       
       if (response.ok) {
         fetchFacts();
-        setShowForm(false);
+        setIsFormModalOpen(false);
       }
     } catch (error) {
       console.error('Error adding fact:', error);
@@ -48,16 +50,32 @@ function App() {
       </header>
       
       <div className="controls">
-        <RandomFact facts={facts} />
+        <button onClick={() => setIsFactModalOpen(true)}>
+          Show Random Fact
+        </button>
         <button 
           className="form-toggle-btn"
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => setIsFormModalOpen(true)}
         >
-          {showForm ? 'Hide Form' : 'Add New Fact'}
+          Add New Fact
         </button>
       </div>
       
-      {showForm && <FactForm onSubmit={addFact} />}
+      <Modal 
+        isOpen={isFormModalOpen} 
+        onClose={() => setIsFormModalOpen(false)}
+        title="Add New Dog Fact"
+      >
+        <FactForm onSubmit={addFact} />
+      </Modal>
+      
+      <Modal
+        isOpen={isFactModalOpen}
+        onClose={() => setIsFactModalOpen(false)}
+        title="Random Dog Fact"
+      >
+        <RandomFact facts={facts} />
+      </Modal>
       
       <FactList facts={facts} />
     </div>

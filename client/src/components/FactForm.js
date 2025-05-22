@@ -12,22 +12,19 @@ function FactForm({ onSubmit }) {
   };
 
   return (
-    <div className="fact-form">
-      <h2>Add New Dog Fact</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="fact">New Fact:</label>
-          <textarea
-            id="fact"
-            value={newFact}
-            onChange={(e) => setNewFact(e.target.value)}
-            placeholder="Enter a new dog fact"
-            required
-          />
-        </div>
-        <button type="submit" className="submit-btn">Submit</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label htmlFor="fact">New Fact:</label>
+        <textarea
+          id="fact"
+          value={newFact}
+          onChange={(e) => setNewFact(e.target.value)}
+          placeholder="Enter a new dog fact"
+          required
+        />
+      </div>
+      <button type="submit" className="submit-btn">Submit</button>
+    </form>
   );
 }
 
