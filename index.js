@@ -1,12 +1,18 @@
 const express = require('express');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Set up database
+const adapter = new FileSync('db.json');
+const db = low(adapter);
 
 // Add body parser middleware
 app.use(express.json());
 
-// Store dog facts in memory
-let facts = [
+// Initialize the database with default data if it's empty
+db.defaults({ facts: [
   "Dogs have three eyelids.",
   "Dogs' noses are wet to help absorb scent chemicals.",
   "The Basenji is the only breed of dog that cannot bark.",
@@ -17,15 +23,17 @@ let facts = [
   "The Labrador Retriever has been the most popular dog breed in the U.S. for many years.",
   "Dogs' sweat glands are primarily located in their paw pads.",
   "The average dog can understand around 165 words."
-];
+]}).write();
 
 app.get('/api/dogfact', (req, res) => {
+  const facts = db.get('facts').value();
   const randomFact = facts[Math.floor(Math.random() * facts.length)];
   res.json({ fact: randomFact });
 });
 
 // Add new endpoint to get all facts
 app.get('/api/dogfacts', (req, res) => {
+  const facts = db.get('facts').value();
   res.json({ facts });
 });
 
@@ -38,12 +46,14 @@ app.post('/api/dogfact', (req, res) => {
   }
   
   // Add the new fact to our collection
-  facts.push(fact);
+  db.get('facts').push(fact).write();
+  
+  const totalFacts = db.get('facts').size().value();
   
   res.status(201).json({ 
     message: 'Dog fact added successfully',
     fact,
-    totalFacts: facts.length
+    totalFacts
   });
 });
 
